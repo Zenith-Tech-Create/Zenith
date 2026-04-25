@@ -18,7 +18,7 @@ const fs = require('fs');
 const args = process.argv.slice(2);
 const platform = args[0] || 'all';
 
-const config = {
+const baseConfig = {
   appId: 'com.zenith.app',
   productName: 'Zenith',
   directories: {
@@ -32,11 +32,6 @@ const config = {
     'node_modules/**/*',
     'package.json'
   ],
-  win: {
-    target: ['nsis'],
-    certificateFile: process.env.WIN_CERT_FILE || null,
-    certificatePassword: process.env.WIN_CERT_PASSWORD || null
-  },
   nsis: {
     oneClick: false,
     allowToChangeInstallationDirectory: true,
@@ -44,28 +39,15 @@ const config = {
     createStartMenuShortcut: true,
     shortcutName: 'Zenith'
   },
-  mac: {
-    target: ['dmg', 'zip'],
-    category: 'public.app-category.productivity',
-    hardenedRuntime: true,
-    gatekeeperAssess: false
-  },
   dmg: {
     contents: [
       { x: 110, y: 150, type: 'file' },
       { x: 240, y: 150, type: 'link', path: '/Applications' }
     ]
-  },
-  linux: {
-    target: ['AppImage', 'deb'],
-    category: 'Utility'
-  },
-  publish: {
-    provider: 'github',
-    owner: process.env.GITHUB_OWNER || 'your-github-username',
-    repo: process.env.GITHUB_REPO || 'zenith'
   }
 };
+
+const config = baseConfig;
 
 const targets = {
   win: ['nsis'],
@@ -77,21 +59,35 @@ async function buildApp() {
   try {
     console.log(`🚀 Building Zenith for ${platform === 'all' ? 'all platforms' : platform}...`);
     
+    let buildConfig = { ...baseConfig };
+    
     if (platform === 'all') {
       // Build for all platforms
-      await build({
-        ...config,
-        win: { target: targets.win },
-        mac: { target: targets.mac },
-        linux: { target: targets.linux }
-      });
-    } else if (['win', 'mac', 'linux'].includes(platform)) {
-      // Build for specific platform
-      const buildConfig = { ...config };
-      buildConfig.win = { target: targets[platform] };
-      buildConfig.mac = { target: targets[platform] };
-      buildConfig.linux = { target: targets[platform] };
-      
+      buildConfig.win = { target: ['nsis'] };
+      buildConfig.mac = { target: ['dmg', 'zip'] };
+      buildConfig.linux = { target: ['AppImage', 'deb'] };
+      await build(buildConfig);
+    } else if (platform === 'mac') {
+      // Build for macOS only
+      buildConfig.mac = {
+        target: ['dmg', 'zip'],
+        icon: 'assets/electron.icns',
+        category: 'public.app-category.productivity',
+        hardenedRuntime: true,
+        gatekeeperAssess: false
+      };
+      await build(buildConfig);
+    } else if (platform === 'win') {
+      // Build for Windows only
+      buildConfig.win = {
+        target: ['nsis'],
+        certificateFile: process.env.WIN_CERT_FILE || null,
+        certificatePassword: process.env.WIN_CERT_PASSWORD || null
+      };
+      await build(buildConfig);
+    } else if (platform === 'linux') {
+      // Build for Linux only
+      buildConfig.linux = { target: ['AppImage', 'deb'] };
       await build(buildConfig);
     } else {
       console.error(`❌ Unknown platform: ${platform}`);
