@@ -1,0 +1,146 @@
+name: 🏗️ Build & Release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          # macOS - ARM64 (Apple Silicon)
+          - os: macos-14-arm64
+            target: mac
+            arch: arm64
+            
+          # macOS - x64 (Intel)
+          - os: macos-13
+            target: mac
+            arch: x64
+            
+          # Windows - x64
+          - os: windows-latest
+            target: win
+            arch: x64
+            
+          # Linux - x64
+          - os: ubuntu-latest
+            target: linux
+            arch: x64
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build app (${{ matrix.target }} - ${{ matrix.arch }})
+        run: npm run build:${{ matrix.target }}
+
+      - name: 📤 Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}-${{ matrix.arch }}
+          path: dist/
+          retention-days: 30
+
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📥 Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist-combined/
+
+      - name: 📦 Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist-combined/**/*.dmg
+            dist-combined/**/*.zip
+            dist-combined/**/*.exe
+            dist-combined/**/*.msi
+            dist-combined/**/*.AppImage
+            dist-combined/**/*.deb
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  create-universal-mac:
+    needs: [build]
+    runs-on: macos-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: 📥 Download ARM64 build
+        uses: actions/download-artifact@v4
+        with:
+          name: mac-arm64
+          path: build-arm64/
+
+      - name: 📥 Download x64 build
+        uses: actions/download-artifact@v4
+        with:
+          name: mac-x64
+          path: build-x64/
+
+      - name: 🔨 Create universal binary
+        run: |
+          # Extract DMGs
+          mkdir -p mount-arm64 mount-x64
+          
+          hdiutil attach build-arm64/*.dmg -mountpoint mount-arm64 -quiet
+          hdiutil attach build-x64/*.dmg -mountpoint mount-x64 -quiet
+          
+          # Extract apps
+          cp -r mount-arm64/*.app build-arm64.app
+          cp -r build-x64/*.app build-x64.app
+          
+          # Create universal binary using lipo
+          mkdir -p build-universal.app/Contents/MacOS
+          
+          lipo -create \
+            build-arm64.app/Contents/MacOS/Zenith \
+            build-x64.app/Contents/MacOS/Zenith \
+            -output build-universal.app/Contents/MacOS/Zenith
+          
+          # Copy resources from arm64 (they're the same)
+          cp -r build-arm64.app/Contents/Resources build-universal.app/Contents/
+          cp -r build-arm64.app/Contents/Frameworks build-universal.app/Contents/
+          cp build-arm64.app/Contents/Info.plist build-universal.app/Contents/
+          
+          # Create DMG
+          hdiutil create -volname "Zenith" -srcfolder build-universal.app -ov -format UDZO dist/Zenith-universal.dmg
+          
+          # Unmount
+          hdiutil detach mount-arm64 -quiet 2>/dev/null || true
+          hdiutil detach mount-x64 -quiet 2>/dev/null || true
+          
+          ls -lh dist/
+
+      - name: 📤 Upload universal DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-universal
+          path: dist/Zenith-universal.dmg
+          retention-days: 30
