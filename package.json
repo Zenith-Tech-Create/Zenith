@@ -19,7 +19,7 @@
   "author": {
   "name": "Zenith OS",
   "email": "Localaiworkstation@email.com"
-  }
+  },
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.3.1",
