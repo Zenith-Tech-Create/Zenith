@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const Store = require('electron-store');
+const LicenseValidator = require('./src/license-validator');
 
 // Initialize persistent storage
 const store = new Store();
