@@ -77,22 +77,22 @@ class LemonsqueezyLicenseValidator {
   }
 
   /**
-   * Validate license key online via Lemonsqueezy API
+   * Validate license key online via Lemonsqueezy License API
+   * Uses form-urlencoded POST (not JSON) as per Lemonsqueezy License API spec
    * @param {string} licenseKey - License key
    * @returns {Promise<object>} - Validation result
    */
   async validateOnline(licenseKey) {
     return new Promise((resolve, reject) => {
-      const postData = JSON.stringify({
-        license_key: licenseKey
-      });
+      // Lemonsqueezy License API requires form-urlencoded data
+      const postData = `license_key=${encodeURIComponent(licenseKey)}`;
 
       const options = {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': postData.length,
-          'Authorization': `Bearer ${this.lemonsqueezyApiKey}`
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Length': postData.length
         }
       };
 
@@ -107,18 +107,22 @@ class LemonsqueezyLicenseValidator {
           try {
             const response = JSON.parse(data);
 
-            // Lemonsqueezy API response format
-            if (response.valid) {
+            // Lemonsqueezy License API response format
+            // See: https://docs.lemonsqueezy.com/api/license-api/validate-license-key
+            if (response.valid === true) {
+              const meta = response.meta || {};
+              const expiresAt = response.meta?.expires_at || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+              
               return resolve({
                 valid: true,
-                email: response.data?.customer_email || 'Unknown',
-                expiresAt: response.data?.expires_at,
-                message: `License validated for ${response.data?.customer_email || 'your account'}`
+                email: meta.customer_email || 'customer@zenith.app',
+                expiresAt: expiresAt,
+                message: `License validated for ${meta.customer_email || 'your account'}`
               });
             } else {
               return resolve({
                 valid: false,
-                message: response.error || 'License key is invalid.'
+                message: response.error || 'License key is invalid or has expired.'
               });
             }
           } catch (error) {
