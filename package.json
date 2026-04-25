@@ -1,6 +1,6 @@
 {
-  "name": "zenith",
-  "version": "1.1.7",
+  "name": "Zenith Personal OS",
+  "version": "1.2.0",
   "description": "A comprehensive digital daily planner",
   "main": "main.js",
   "homepage": "./",
@@ -16,7 +16,10 @@
     "dist": "electron-builder"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+  "name": "Zenith OS",
+  "email": "Localaiworkstation@email.com"
+  }
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.3.1",
