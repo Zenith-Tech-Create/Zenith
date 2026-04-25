@@ -2,26 +2,47 @@
 node_modules/
 package-lock.json
 
-# Build outputs
+# Build artifacts
 dist/
 out/
-build/
+*.dmg
+*.exe
+*.msi
+*.app
 
 # OS files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
-# IDE
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
+
+# Environment
+.env
+.env.local
 
 # Logs
 *.log
 npm-debug.log*
-yarn-debug.log*
 
-# Cache
-.cache/
-*.tmp
+# Build cache
+.electron-builder/
+
+# Internal/Development docs (not for public repo)
+DEPLOYMENT.md
+DEPLOYMENT_COMPLETE.md
+SYSTEM_COMPLETE.txt
+STRIPE_INTEGRATION.md
+COMMANDS.md
+VERIFICATION_REPORT.md
+LAUNCH_CHECKLIST.md
+START_HERE.md
