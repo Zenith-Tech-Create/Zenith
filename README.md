@@ -1,6 +1,8 @@
-# Zenith — Personal Life OS
+# Zenith — Personal Life OS 💡
 
-A desktop productivity app built with Electron.
+A comprehensive desktop productivity app for task management, goal tracking, fitness logging, nutrition tracking, journaling, and AI-powered assistance.
+
+**Zenith requires a license key to run.** Purchase a license at: https://zenith-app.com/buy ($15 one-time)
 
 ---
 
@@ -30,7 +32,9 @@ Wait for it to finish (may take a minute).
 ```
 npm start
 ```
-The Zenith window will open!
+The Zenith window will open. On first launch, you'll be prompted to enter your license key.
+
+**Don't have a license?** Purchase one at https://zenith-app.com/buy for $15 (includes lifetime updates).
 
 ---
 
@@ -74,15 +78,41 @@ zenith/
 
 ---
 
-## Adding Your Anthropic API Key (for AI Assistant)
-The AI assistant calls the Anthropic API. To use it:
-1. Get an API key at https://console.anthropic.com
-2. Open `main.js` and find the `webPreferences` section
-3. The app currently uses the API directly — for a production app you'd want to store the key securely using `electron-store`
+## Features
+✅ **Task Tracking** — Organize tasks by category and date
+✅ **Goal Setting** — Track progress toward your goals  
+✅ **Habit Tracking** — Build streaks and monitor daily habits  
+✅ **Fitness Logging** — Log workouts and track calories burned  
+✅ **Nutrition Tracking** — Monitor daily calories, protein, carbs, and fat  
+✅ **Journal & Notes** — Write daily journal entries and organize notes  
+✅ **Calendar View** — See your tasks and events on a calendar  
+✅ **Finance Tracking** — Monitor income and expenses  
+✅ **AI Assistant** — Get personalized productivity tips (requires Anthropic API key)
+
+## AI Assistant Setup (Optional)
+The AI assistant requires an Anthropic API key. To enable it:
+1. Get a free API key at https://console.anthropic.com
+2. When you first use the AI assistant in the app, paste your API key
+3. The key is stored locally on your device
 
 ---
 
-## Next Steps
+## License Verification
+Zenith requires a valid license key to run. The license check happens when you open the app:
+
+1. **On first launch**, a license activation window appears
+2. **Enter your license key** from your purchase confirmation email
+3. **Once activated**, the main Zenith app opens
+4. License is stored locally and verified on future launches
+5. License keys are valid for 1 year from activation date
+
+To check or update your license key, restart the app and you'll be prompted to enter it again.
+
+## Development & Customization
 - Add your app icon to `/assets/icon.ico` (Windows) and `/assets/icon.icns` (Mac)
 - Customize the default data in `main.js` → `seedDefaultData()`
 - Each module in `/src/modules/` is self-contained — easy to modify
+- License validation is handled in `/src/license-validator.js`
+
+## Support
+For license issues or questions, email: support@zenith-app.com
