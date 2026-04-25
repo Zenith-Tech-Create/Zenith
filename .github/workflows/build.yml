@@ -20,7 +20,7 @@ jobs:
             arch: arm64
             
           # macOS - x64 (Intel)
-          - os: macos-13
+          - os: macos-latest
             target: mac
             arch: x64
             
