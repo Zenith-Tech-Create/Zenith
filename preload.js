@@ -1,10 +1,11 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('electronAPI', {
-  // Store operations
-  storeGet: (key) => ipcRenderer.invoke('store:get', key),
-  storeSet: (key, value) => ipcRenderer.invoke('store:set', key, value),
-  storeGetAll: () => ipcRenderer.invoke('store:get-all'),
+// Expose APIs to the renderer process
+contextBridge.exposeInMainWorld('zenith', {
+  // Store operations (for db.js)
+  get: (key) => ipcRenderer.invoke('store:get', key),
+  set: (key, value) => ipcRenderer.invoke('store:set', key, value),
+  loadAll: () => ipcRenderer.invoke('store:get-all'),
 
   // License operations
   validateLicense: (licenseKey) => ipcRenderer.invoke('license:validate', licenseKey),
@@ -13,4 +14,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Listen for system events
   onOverdueReminders: (callback) => ipcRenderer.on('system:overdue-reminders', (event, data) => callback(data)),
+
+  // Tasks overdue check
+  getOverdueTasks: () => ipcRenderer.invoke('tasks:get-overdue'),
 });

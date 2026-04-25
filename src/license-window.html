@@ -256,12 +256,12 @@
 
             try {
                 // Send license to main process for validation
-                const result = await window.electronAPI.validateLicense(licenseKey);
+                const result = await window.zenith.validateLicense(licenseKey);
                 
                 if (result.valid) {
                     showSuccess(`✓ ${result.message}`);
                     setTimeout(() => {
-                        window.electronAPI.closeLicenseWindow();
+                        window.zenith.closeLicenseWindow();
                     }, 1500);
                 } else {
                     showError(`✗ ${result.message}`);
@@ -275,7 +275,7 @@
         });
 
         buyBtn.addEventListener('click', () => {
-            window.electronAPI.openBuyLink();
+            window.zenith.openBuyLink();
         });
 
         function showError(msg) {

@@ -56,31 +56,6 @@ async function seedDefaultData() {
 }
 
 // *** IPC handler: renderer calls this when it's ready to receive overdue tasks ***
-ipcMain.handle('tasks:get-overdue', () => {
-    console.log('--- Overdue Task Check (renderer-initiated) ---');
-    try {
-        const now   = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const tasks = store.get('tasks', []);
-        const due   = tasks.filter(task => {
-            if (task.done) return false;
-            const d = task.date;
-            if (!d || d === 'Tomorrow' || d === 'This week') return false;
-            if (d === 'Today') return true;
-            const parsed  = new Date(d);
-            if (isNaN(parsed.getTime())) return false;
-            const taskDay = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
-            return taskDay <= today;
-        });
-        console.log(`✅ Found ${due.length} due/overdue tasks.`);
-        return due;
-    } catch (error) {
-        console.error('🚨 ERROR during overdue task check:', error);
-        return [];
-    }
-});
-
-
 function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
@@ -140,19 +115,102 @@ ipcMain.handle('store:get-all', () => {
   }
 })
 
+// ── License Verification IPC Handlers ────────────────────────────────────
+
+ipcMain.handle('license:validate', (_event, licenseKey) => {
+  const result = LicenseValidator.validateLicenseKey(licenseKey);
+  if (result.valid) {
+    LicenseValidator.storeLicense(licenseKey);
+    // Close license window and show main app
+    if (licenseWindow) {
+      licenseWindow.close();
+      licenseWindow = null;
+    }
+    mainWindow = createWindow();
+  }
+  return result;
+});
+
+ipcMain.handle('license:check', () => {
+  return {
+    isLicensed: LicenseValidator.isLicensed(),
+  };
+});
+
+ipcMain.handle('license:get-stored', () => {
+  return LicenseValidator.getStoredLicense();
+});
+
+ipcMain.on('license:close-window', () => {
+  if (licenseWindow) {
+    licenseWindow.close();
+    licenseWindow = null;
+  }
+  app.quit();
+});
+
+ipcMain.handle('license:open-buy-link', () => {
+  // Open purchase page in browser
+  shell.openExternal('https://zenith-app.com/buy');
+  return { success: true };
+});
+
+ipcMain.handle('tasks:get-overdue', () => {
+    console.log('--- Overdue Task Check (renderer-initiated) ---');
+    try {
+        const now   = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const tasks = store.get('tasks', []);
+        const due   = tasks.filter(task => {
+            if (task.done) return false;
+            const d = task.date;
+            if (!d || d === 'Tomorrow' || d === 'This week') return false;
+            if (d === 'Today') return true;
+            const parsed  = new Date(d);
+            if (isNaN(parsed.getTime())) return false;
+            const taskDay = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+            return taskDay <= today;
+        });
+        console.log(`✅ Found ${due.length} due/overdue tasks.`);
+        return due;
+    } catch (error) {
+        console.error('🚨 ERROR during overdue task check:', error);
+        return [];
+    }
+});
+
 // ── App lifecycle ───────────────────────────────────────────────────────
 
 async function main() {
   // 1. Seed Data
-  await seedDefaultData()
+  await seedDefaultData();
 
-  // 2. Create the window
-  const win = createWindow()
+  // 2. Check if app is licensed
+  const isLicensed = LicenseValidator.isLicensed();
+  
+  if (!isLicensed) {
+    // Show license window if no valid license
+    console.log('📄 No valid license found. Showing license activation window.');
+    licenseWindow = createLicenseWindow();
+    
+    // Don't create main window until license is validated
+    return;
+  }
+  
+  // 3. Create the main window if licensed
+  console.log('✅ Valid license found. Loading main application.');
+  mainWindow = createWindow();
 
-  // 3. Handle application closure/activation
+  // 4. Handle application closure/activation
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
+    if (BrowserWindow.getAllWindows().length === 0) {
+      if (LicenseValidator.isLicensed()) {
+        mainWindow = createWindow();
+      } else {
+        licenseWindow = createLicenseWindow();
+      }
+    }
+  });
 }
 
 // Start the entire application sequence asynchronously
