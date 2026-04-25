@@ -12,7 +12,11 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const assetsDir = path.join(__dirname, '../assets');
-const srcIcon = path.join(assetsDir, 'zenith_icon_final.png');
+// Try new icon first, fallback to final version
+let srcIcon = path.join(assetsDir, 'zenith_icon.png');
+if (!fs.existsSync(srcIcon)) {
+  srcIcon = path.join(assetsDir, 'zenith_icon_final.png');
+}
 const macIcon = path.join(assetsDir, 'electron.icns');
 const winIcon = path.join(assetsDir, 'electron.ico');
 
