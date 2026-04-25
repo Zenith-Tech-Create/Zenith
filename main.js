@@ -1,3 +1,6 @@
+// Load configuration and environment variables FIRST
+require('./src/config');
+
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const Store = require('electron-store');

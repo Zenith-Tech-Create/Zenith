@@ -15,6 +15,14 @@ class LemonsqueezyLicenseValidator {
     // Get Lemonsqueezy API key from config
     this.lemonsqueezyApiKey = config.lemonsqueezy.apiKey;
     this.apiEndpoint = config.lemonsqueezy.apiEndpoint;
+    
+    // Debug logging
+    if (!this.lemonsqueezyApiKey) {
+      console.warn('⚠️  WARNING: LEMONSQUEEZY_API_KEY not set in .env file');
+      console.warn('   Lemonsqueezy validation will not work until API key is configured');
+    } else {
+      console.log('✓ Lemonsqueezy API key loaded successfully');
+    }
   }
 
   /**
