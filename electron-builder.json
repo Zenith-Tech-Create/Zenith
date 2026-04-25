@@ -62,11 +62,14 @@
       "AppImage",
       "deb"
     ],
+    "category": "Utility",
+    "maintainer": "Zenith OS Localaiworkstation@gmail.com"
+  },
     "category": "Utility"
   },
   "publish": {
     "provider": "github",
-    "owner": "your-github-username",
-    "repo": "zenith"
+    "owner": "Zenith-Tech-Create",
+    "repo": "Zenith"
   }
 }
