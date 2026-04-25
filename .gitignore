@@ -46,3 +46,6 @@ COMMANDS.md
 VERIFICATION_REPORT.md
 LAUNCH_CHECKLIST.md
 START_HERE.md
+dist/
+node_modules/
+.DS_Store
