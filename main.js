@@ -1,7 +1,9 @@
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const Store = require('electron-store');
-const LicenseValidator = require('./src/license-validator');
+// Use Lemonsqueezy license validator (validates keys from Lemonsqueezy API)
+const LemonsqueezyValidator = require('./src/license-validator-lemonsqueezy');
+const licenseValidator = new LemonsqueezyValidator();
 
 // Initialize persistent storage
 const store = new Store();
@@ -156,12 +158,12 @@ ipcMain.handle('store:get-all', () => {
   }
 })
 
-// ── License Verification IPC Handlers ────────────────────────────────────
+// ── License Verification IPC Handlers (Lemonsqueezy) ────────────────────────────────────
 
-ipcMain.handle('license:validate', (_event, licenseKey) => {
-  const result = LicenseValidator.validateLicenseKey(licenseKey);
+ipcMain.handle('license:validate', async (_event, licenseKey) => {
+  const result = await licenseValidator.validateLicenseKey(licenseKey);
   if (result.valid) {
-    LicenseValidator.storeLicense(licenseKey);
+    licenseValidator.storeLicense(licenseKey);
     // Close license window and show main app
     if (licenseWindow) {
       licenseWindow.close();
@@ -172,14 +174,15 @@ ipcMain.handle('license:validate', (_event, licenseKey) => {
   return result;
 });
 
-ipcMain.handle('license:check', () => {
+ipcMain.handle('license:check', async () => {
+  const isLicensed = await licenseValidator.isLicensed();
   return {
-    isLicensed: LicenseValidator.isLicensed(),
+    isLicensed: isLicensed,
   };
 });
 
 ipcMain.handle('license:get-stored', () => {
-  return LicenseValidator.getStoredLicense();
+  return licenseValidator.getStoredLicense();
 });
 
 ipcMain.on('license:close-window', () => {
@@ -227,7 +230,7 @@ async function main() {
   await seedDefaultData();
 
   // 2. Check if app is licensed
-  const isLicensed = LicenseValidator.isLicensed();
+  const isLicensed = await licenseValidator.isLicensed();
   
   if (!isLicensed) {
     // Show license window if no valid license
@@ -243,9 +246,9 @@ async function main() {
   mainWindow = createWindow();
 
   // 4. Handle application closure/activation
-  app.on('activate', () => {
+  app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      if (LicenseValidator.isLicensed()) {
+      if (await licenseValidator.isLicensed()) {
         mainWindow = createWindow();
       } else {
         licenseWindow = createLicenseWindow();
