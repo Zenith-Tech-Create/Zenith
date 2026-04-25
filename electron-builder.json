@@ -59,12 +59,8 @@
   },
   "linux": {
     "target": [
-      "AppImage",
-      "deb"
+      "AppImage"
     ],
-    "category": "Utility",
-    "maintainer": "Zenith OS Localaiworkstation@gmail.com"
-  },
     "category": "Utility"
   },
   "publish": {
