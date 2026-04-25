@@ -6,6 +6,10 @@ const LicenseValidator = require('./src/license-validator');
 // Initialize persistent storage
 const store = new Store();
 
+// Global window references
+let licenseWindow = null;
+let mainWindow = null;
+
 // Seed default data on first launch
 async function seedDefaultData() {
   if (store.get('initialized')) return; // Already initialized
@@ -56,7 +60,43 @@ async function seedDefaultData() {
   store.set('initialized', true)
 }
 
-// *** IPC handler: renderer calls this when it's ready to receive overdue tasks ***
+// ── License Window ──────────────────────────────────────────────────────────────
+
+function createLicenseWindow() {
+  if (licenseWindow) return licenseWindow;
+  
+  const win = new BrowserWindow({
+    width: 500,
+    height: 600,
+    minWidth: 400,
+    minHeight: 500,
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      preload: path.join(__dirname, 'preload.js'),
+    },
+    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
+    backgroundColor: '#ffffff',
+    show: false,
+    modal: true,
+    parent: mainWindow || undefined,
+  });
+
+  win.loadFile(path.join(__dirname, 'src', 'license-window.html'));
+
+  win.once('ready-to-show', () => {
+    win.show();
+  });
+
+  win.on('closed', () => {
+    licenseWindow = null;
+  });
+
+  return win;
+}
+
+// ── Main Application Window ──────────────────────────────────────────────────────
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
