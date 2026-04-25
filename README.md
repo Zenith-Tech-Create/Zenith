@@ -6,7 +6,23 @@ A comprehensive desktop productivity app for task management, goal tracking, fit
 
 ---
 
-## Setup Instructions
+## Quick Start (Easiest Way)
+
+### Option 1: Automated Setup (Recommended)
+
+#### **Windows Users:**
+1. Unzip the Zenith folder to your Desktop or Documents
+2. **Double-click `Start-Here.bat`**
+3. That's it! The app will install and launch automatically.
+
+#### **macOS Users:**
+1. Unzip the Zenith folder to your Desktop or Documents
+2. **Double-click `Start-Here.command`**
+3. That's it! The app will install and launch automatically.
+
+---
+
+## Manual Setup (If You Prefer)
 
 ### Prerequisites
 You need **Node.js** installed on your computer.
