@@ -11,7 +11,7 @@
  *   npm run build:linux     (Linux only)
  */
 
-const { build } = require('electron-builder');
+const { build, Platform } = require('electron-builder');
 const path = require('path');
 const fs = require('fs');
 
@@ -66,7 +66,7 @@ async function buildApp() {
       buildConfig.win = { target: ['nsis'] };
       buildConfig.mac = { target: ['dmg', 'zip'] };
       buildConfig.linux = { target: ['AppImage', 'deb'] };
-      await build(buildConfig);
+  await build({ config: buildConfig });
     } else if (platform === 'mac') {
       // Build for macOS only
       buildConfig.mac = {
@@ -76,7 +76,7 @@ async function buildApp() {
         hardenedRuntime: true,
         gatekeeperAssess: false
       };
-      await build(buildConfig);
+      await build({ config: buildConfig, targets: Platform.MAC.createTarget() });
     } else if (platform === 'win') {
       // Build for Windows only
       buildConfig.win = {
@@ -84,11 +84,11 @@ async function buildApp() {
         certificateFile: process.env.WIN_CERT_FILE || null,
         certificatePassword: process.env.WIN_CERT_PASSWORD || null
       };
-      await build(buildConfig);
+      await build({ config: buildConfig, targets: Platform.WINDOWS.createTarget() });
     } else if (platform === 'linux') {
       // Build for Linux only
       buildConfig.linux = { target: ['AppImage', 'deb'] };
-      await build(buildConfig);
+      await build({ config: buildConfig, targets: Platform.LINUX.createTarget() });
     } else {
       console.error(`❌ Unknown platform: ${platform}`);
       console.error('Supported platforms: all, win, mac, linux');
