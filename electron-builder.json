@@ -1,0 +1,70 @@
+{
+  "appId": "com.zenith.app",
+  "productName": "Zenith",
+  "directories": {
+    "output": "dist",
+    "buildResources": "assets"
+  },
+  "files": [
+    "main.js",
+    "preload.js",
+    "src/**/*",
+    "node_modules/**/*",
+    "package.json"
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "certificateFile": null,
+    "certificatePassword": null
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Zenith"
+  },
+  "mac": {
+    "target": [
+      "dmg",
+      "zip"
+    ],
+    "category": "public.app-category.productivity",
+    "hardenedRuntime": true,
+    "gatekeeperAssess": false
+  },
+  "dmg": {
+    "contents": [
+      {
+        "x": 110,
+        "y": 150,
+        "type": "file"
+      },
+      {
+        "x": 240,
+        "y": 150,
+        "type": "link",
+        "path": "/Applications"
+      }
+    ]
+  },
+  "linux": {
+    "target": [
+      "AppImage",
+      "deb"
+    ],
+    "category": "Utility"
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "your-github-username",
+    "repo": "zenith"
+  }
+}

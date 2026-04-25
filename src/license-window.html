@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith - License Activation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-activate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-activate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-activate:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-buy {
+            background: #f5f5f5;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-buy:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .success {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .success.show {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .info-box {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">💡</div>
+            <h1>Zenith</h1>
+            <p class="subtitle">License Activation</p>
+        </div>
+
+        <div class="error" id="error-msg"></div>
+        <div class="success" id="success-msg"></div>
+
+        <form id="license-form">
+            <div class="form-group">
+                <label for="license-key">License Key</label>
+                <input 
+                    type="text" 
+                    id="license-key" 
+                    placeholder="Paste your license key here"
+                    autocomplete="off"
+                    required
+                >
+                <div class="hint">Enter the license key from your purchase confirmation email</div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn-activate" id="activate-btn">Activate License</button>
+                <button type="button" class="btn-buy" id="buy-btn">Buy Now</button>
+            </div>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Validating license...</p>
+        </div>
+
+        <div class="info-box">
+            <strong>Don't have a license?</strong><br>
+            Click "Buy Now" to purchase Zenith for just $15. You'll receive your license key via email immediately.
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('license-form');
+        const licenseInput = document.getElementById('license-key');
+        const activateBtn = document.getElementById('activate-btn');
+        const buyBtn = document.getElementById('buy-btn');
+        const loading = document.getElementById('loading');
+        const errorMsg = document.getElementById('error-msg');
+        const successMsg = document.getElementById('success-msg');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const licenseKey = licenseInput.value.trim();
+            if (!licenseKey) {
+                showError('Please enter your license key');
+                return;
+            }
+
+            loading.style.display = 'block';
+            activateBtn.disabled = true;
+
+            try {
+                // Send license to main process for validation
+                const result = await window.electronAPI.validateLicense(licenseKey);
+                
+                if (result.valid) {
+                    showSuccess(`✓ ${result.message}`);
+                    setTimeout(() => {
+                        window.electronAPI.closeLicenseWindow();
+                    }, 1500);
+                } else {
+                    showError(`✗ ${result.message}`);
+                }
+            } catch (error) {
+                showError(`Error: ${error.message}`);
+            } finally {
+                loading.style.display = 'none';
+                activateBtn.disabled = false;
+            }
+        });
+
+        buyBtn.addEventListener('click', () => {
+            window.electronAPI.openBuyLink();
+        });
+
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.classList.add('show');
+            successMsg.classList.remove('show');
+        }
+
+        function showSuccess(msg) {
+            successMsg.textContent = msg;
+            successMsg.classList.add('show');
+            errorMsg.classList.remove('show');
+        }
+    </script>
+</body>
+</html>

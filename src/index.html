@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; connect-src https://api.anthropic.com; img-src 'self' data:;" />
+  <title>Zenith</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div id="app">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-name">Zenith</div>
+        <div class="brand-sub">Personal Life OS</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-item active" data-section="dashboard">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          Dashboard
+        </div>
+        <div class="nav-item" data-section="tasks">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          Tasks
+        </div>
+        <div class="nav-item" data-section="habits">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+          Habits
+        </div>
+        <div class="nav-item" data-section="goals">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+          Goals
+        </div>
+        <div class="nav-item" data-section="calendar">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Calendar
+        </div>
+        <div class="nav-item" data-section="notes">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+          Notes
+        </div>
+        <div class="nav-item" data-section="finance">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          Finance
+        </div>
+        <div class="nav-item" data-section="fitness">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 4v16M18 4v16M3 8h18M3 16h18"/></svg>
+          Fitness
+        </div>
+        <div class="nav-item" data-section="nutrition">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          Nutrition
+        </div>
+        <div class="nav-divider"></div>
+        <div class="nav-item ai-nav" data-section="ai">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a10 10 0 110 20A10 10 0 0112 2z"/><path d="M12 16v-4M12 8h.01"/></svg>
+          AI Assistant
+          <span class="ai-badge">AI</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer" id="sidebar-date"></div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content">
+
+      <div id="section-dashboard" class="section active"></div>
+      <div id="section-tasks" class="section"></div>
+      <div id="section-habits" class="section"></div>
+      <div id="section-goals" class="section"></div>
+      <div id="section-calendar" class="section"></div>
+      <div id="section-notes" class="section"></div>
+      <div id="section-finance" class="section"></div>
+      <div id="section-fitness" class="section"></div>
+      <div id="section-nutrition" class="section"></div>
+      <div id="section-ai" class="section ai-section"></div>
+
+    </main>
+  </div>
+
+  <!-- Chart.js for dashboard charts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+  <!-- App modules -->
+  <script src="modules/db.js"></script>
+  <script src="modules/dashboard.js"></script>
+  <script src="modules/tasks.js"></script>
+  <script src="modules/habits.js"></script>
+  <script src="modules/goals.js"></script>
+  <script src="modules/calendar.js"></script>
+  <script src="modules/notes.js"></script>
+  <script src="modules/finance.js"></script>
+  <script src="modules/fitness.js"></script>
+  <script src="modules/nutrition.js"></script>
+  <script src="modules/ai.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
