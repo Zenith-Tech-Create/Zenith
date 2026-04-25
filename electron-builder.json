@@ -21,6 +21,7 @@
         ]
       }
     ],
+    "icon": "assets/electron.ico",
     "certificateFile": null,
     "certificatePassword": null
   },
@@ -36,6 +37,7 @@
       "dmg",
       "zip"
     ],
+    "icon": "assets/electron.icns",
     "category": "public.app-category.productivity",
     "hardenedRuntime": true,
     "gatekeeperAssess": false
