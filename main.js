@@ -4,6 +4,7 @@ require('./src/config');
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const Store = require('electron-store');
+const { autoUpdater } = require('electron-updater');
 // Use Lemonsqueezy license validator (validates keys from Lemonsqueezy API)
 const LemonsqueezyValidator = require('./src/license-validator-lemonsqueezy');
 const licenseValidator = new LemonsqueezyValidator();
