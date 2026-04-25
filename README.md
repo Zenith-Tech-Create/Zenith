@@ -12,12 +12,12 @@ A comprehensive desktop productivity app for task management, goal tracking, fit
 
 #### **Windows Users:**
 1. Unzip the Zenith folder to your Desktop or Documents
-2. **Double-click `Start-Here.bat`**
+2. **Double-click `Start-Here-Windows.bat`**
 3. That's it! The app will install and launch automatically.
 
 #### **macOS Users:**
 1. Unzip the Zenith folder to your Desktop or Documents
-2. **Double-click `Start-Here.command`**
+2. **Double-click `Start-Here-macOS.command`**
 3. That's it! The app will install and launch automatically.
 
 ---
@@ -35,7 +35,7 @@ Unzip and place the `zenith` folder somewhere on your computer (e.g. your Deskto
 
 ### Step 2 — Open a terminal in the folder
 - **Windows**: Right-click inside the folder → "Open in Terminal" (or search for "Command Prompt")
-- **Mac**: Right-click the folder → "New Terminal at Folder"
+- **macOS**: Right-click the folder → "New Terminal at Folder"
 
 ### Step 3 — Install dependencies
 Type this and press Enter:

@@ -16,7 +16,7 @@ Welcome to Zenith! Getting started is **super easy**.
    - Launch the app
 
 ### For macOS Users
-1. **Download** `Setup-Zenith.command`
+1. **Download** `Setup-Zenith-macOS.command`
 2. **Double-click** it
 3. **Done!** Zenith will automatically:
    - Check for Node.js (install if needed)
@@ -25,8 +25,8 @@ Welcome to Zenith! Getting started is **super easy**.
    - Launch the app
 
 ### For Linux Users
-1. **Download** `Setup-Zenith.sh`
-2. **Double-click** it (or run in terminal: `./Setup-Zenith.sh`)
+1. **Download** `Setup-Zenith-Linux.sh`
+2. **Double-click** it (or run in terminal: `./Setup-Zenith-Linux.sh`)
 3. **Done!** Zenith will automatically set up and launch
 
 ---

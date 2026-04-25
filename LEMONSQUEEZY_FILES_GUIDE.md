@@ -8,8 +8,8 @@ This guide tells you exactly which files to upload to Lemonsqueezy so customers 
 
 **Upload 4 files to Lemonsqueezy:**
 1. `Setup-Zenith-Windows.bat` - Windows users
-2. `Setup-Zenith.command` - macOS users
-3. `Setup-Zenith.sh` - Linux users
+2. `Setup-Zenith-macOS.command` - macOS users
+3. `Setup-Zenith-Linux.sh` - Linux users
 4. `QUICK-SETUP.md` - Setup instructions for all platforms
 
 **That's it!** Customers get everything they need from these 4 files.
@@ -73,7 +73,7 @@ This guide tells you exactly which files to upload to Lemonsqueezy so customers 
   - Launches the app
 - **User action:** Double-click and wait
 
-### **File 2: Setup-Zenith.command**
+### **File 2: Setup-Zenith-macOS.command**
 - **Platform:** macOS only
 - **Size:** ~3.2 KB
 - **What it does:**
@@ -83,7 +83,7 @@ This guide tells you exactly which files to upload to Lemonsqueezy so customers 
   - Launches the app
 - **User action:** Double-click and wait
 
-### **File 3: Setup-Zenith.sh**
+### **File 3: Setup-Zenith-Linux.sh**
 - **Platform:** Linux only
 - **Size:** ~3.7 KB
 - **What it does:**
