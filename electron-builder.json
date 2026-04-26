@@ -10,9 +10,16 @@
     "preload.js",
     "src/**/*",
     "node_modules/**/*",
-    "package.json",
-    ".env"
+    "package.json"
   ],
+
+  "extraFiles": [
+    {
+      "from": ".env",
+      "to": ".env"
+    }
+  ],
+  
   "win": {
     "target": [
       {

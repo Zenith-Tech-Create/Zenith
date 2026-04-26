@@ -6,7 +6,10 @@
 const path = require('path');
 
 // Load .env from the app root directory (where main.js is)
-const envPath = path.join(__dirname, '..', '.env');
+const { app } = require('electron');
+const envPath = app.isPackaged 
+  ? path.join(process.resourcesPath, '..', '.env')
+  : path.join(__dirname, '..', '.env');
 require('dotenv').config({ path: envPath });
 
 module.exports = {
