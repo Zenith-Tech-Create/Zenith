@@ -50,7 +50,7 @@ jobs:
       - name: 📚 Install dependencies
         run: npm install
 
-      -- name: 🔑 Inject API key
+      - name: 🔑 Inject API key
         run: node scripts/inject-env.js
         env:
           LEMONSQUEEZY_API_KEY: ${{ secrets.LEMONSQUEEZY_API_KEY }}
