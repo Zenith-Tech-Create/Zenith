@@ -12,3 +12,5 @@ let content = fs.readFileSync(configPath, 'utf8');
 content = content.replace('LEMONSQUEEZY_KEY_PLACEHOLDER', apiKey);
 fs.writeFileSync(configPath, content);
 console.log('✅ API key injected successfully');
+console.log('✅ Verify config contents:');
+console.log(fs.readFileSync(configPath, 'utf8'));
