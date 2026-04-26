@@ -10,7 +10,7 @@
     "preload.js",
     "src/**/*",
     "node_modules/**/*",
-    "package.json"
+    "package.json",
     ".env"
   ],
   "win": {
