@@ -82,7 +82,13 @@ class LemonsqueezyLicenseValidator {
    * @param {string} licenseKey - License key
    * @returns {Promise<object>} - Validation result
    */
-  async validateOnline(licenseKey) {
+ async validateOnline(licenseKey) {
+    console.log('=== LICENSE DEBUG ===');
+    console.log('API Key present:', this.lemonsqueezyApiKey ? 'YES' : 'NO');
+    console.log('API Key length:', this.lemonsqueezyApiKey.length);
+    console.log('Endpoint:', this.apiEndpoint);
+    console.log('License key:', licenseKey);
+    console.log('===================');
     return new Promise((resolve, reject) => {
       // Lemonsqueezy License API requires form-urlencoded data
       const postData = `license_key=${encodeURIComponent(licenseKey)}`;
