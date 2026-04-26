@@ -9,7 +9,7 @@ if (!apiKey) {
 
 const configPath = path.join(__dirname, '..', 'src', 'config.js');
 let content = fs.readFileSync(configPath, 'utf8');
-content = content.replace('LEMONSQUEEZY_KEY_PLACEHOLDER', apiKey);
+content = content.replace("'LEMONSQUEEZY_KEY_PLACEHOLDER'", `'${apiKey}'`);
 fs.writeFileSync(configPath, content);
 console.log('✅ API key injected successfully');
 console.log('✅ Verify config contents:');
