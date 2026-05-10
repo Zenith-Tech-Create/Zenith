@@ -1,19 +1,12 @@
-// Load configuration and environment variables FIRST
-require('./src/config');
-
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const Store = require('electron-store');
 const { autoUpdater } = require('electron-updater');
-// Use Lemonsqueezy license validator (validates keys from Lemonsqueezy API)
-const LemonsqueezyValidator = require('./src/license-validator-lemonsqueezy');
-const licenseValidator = new LemonsqueezyValidator();
 
 // Initialize persistent storage
 const store = new Store();
 
 // Global window references
-let licenseWindow = null;
 let mainWindow = null;
 
 // Seed default data on first launch
@@ -64,41 +57,6 @@ async function seedDefaultData() {
     log: []
   })
   store.set('initialized', true)
-}
-
-// ── License Window ──────────────────────────────────────────────────────────────
-
-function createLicenseWindow() {
-  if (licenseWindow) return licenseWindow;
-  
-  const win = new BrowserWindow({
-    width: 500,
-    height: 600,
-    minWidth: 400,
-    minHeight: 500,
-    webPreferences: {
-      contextIsolation: true,
-      nodeIntegration: false,
-      preload: path.join(__dirname, 'preload.js'),
-    },
-    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
-    backgroundColor: '#ffffff',
-    show: false,
-    modal: true,
-    parent: mainWindow || undefined,
-  });
-
-  win.loadFile(path.join(__dirname, 'src', 'license-window.html'));
-
-  win.once('ready-to-show', () => {
-    win.show();
-  });
-
-  win.on('closed', () => {
-    licenseWindow = null;
-  });
-
-  return win;
 }
 
 // ── Main Application Window ──────────────────────────────────────────────────────
@@ -162,47 +120,6 @@ ipcMain.handle('store:get-all', () => {
   }
 })
 
-// ── License Verification IPC Handlers (Lemonsqueezy) ────────────────────────────────────
-
-ipcMain.handle('license:validate', async (_event, licenseKey) => {
-  const result = await licenseValidator.validateLicenseKey(licenseKey);
-  if (result.valid) {
-    licenseValidator.storeLicense(licenseKey);
-    // Close license window and show main app
-    if (licenseWindow) {
-      licenseWindow.close();
-      licenseWindow = null;
-    }
-    mainWindow = createWindow();
-  }
-  return result;
-});
-
-ipcMain.handle('license:check', async () => {
-  const isLicensed = await licenseValidator.isLicensed();
-  return {
-    isLicensed: isLicensed,
-  };
-});
-
-ipcMain.handle('license:get-stored', () => {
-  return licenseValidator.getStoredLicense();
-});
-
-ipcMain.on('license:close-window', () => {
-  if (licenseWindow) {
-    licenseWindow.close();
-    licenseWindow = null;
-  }
-  app.quit();
-});
-
-ipcMain.handle('license:open-buy-link', () => {
-  // Open purchase page in browser
-  shell.openExternal('https://zenith-app.com/buy');
-  return { success: true };
-});
-
 ipcMain.handle('tasks:get-overdue', () => {
     console.log('--- Overdue Task Check (renderer-initiated) ---');
     try {
@@ -233,37 +150,49 @@ async function main() {
   // 1. Seed Data
   await seedDefaultData();
 
-  // 2. Check if app is licensed
-  const isLicensed = await licenseValidator.isLicensed();
-  
-  if (!isLicensed) {
-    // Show license window if no valid license
-    console.log('📄 No valid license found. Showing license activation window.');
-    licenseWindow = createLicenseWindow();
-    
-    // Don't create main window until license is validated
-    return;
-  }
-  
-  // 3. Create the main window if licensed
-  console.log('✅ Valid license found. Loading main application.');
+  // 2. Create the main window
   mainWindow = createWindow();
 
-  // 4. Handle application closure/activation
-  app.on('activate', async () => {
+  // 3. Handle application closure/activation
+  app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      if (await licenseValidator.isLicensed()) {
-        mainWindow = createWindow();
-      } else {
-        licenseWindow = createLicenseWindow();
-      }
+      mainWindow = createWindow();
     }
   });
 }
 
 // Start the entire application sequence asynchronously
 app.whenReady().then(async () => {
-    await main()
+    await main();
+
+    // Auto-updater
+    autoUpdater.checkForUpdatesAndNotify();
+
+    autoUpdater.on('update-available', () => {
+        const { dialog } = require('electron');
+        dialog.showMessageBox({
+            type: 'info',
+            title: 'Update Available',
+            message: 'A new version of Zenith is available. It will be downloaded in the background.',
+            buttons: ['OK']
+        });
+    });
+
+    autoUpdater.on('update-downloaded', () => {
+        const { dialog } = require('electron');
+        dialog.showMessageBox({
+            type: 'info',
+            title: 'Update Ready',
+            message: 'Update downloaded. Zenith will restart to apply the update.',
+            buttons: ['Restart Now']
+        }).then(() => {
+            autoUpdater.quitAndInstall();
+        });
+    });
+
+    autoUpdater.on('error', (err) => {
+        console.error('Auto-updater error:', err);
+    });
 });
 
 app.on('window-all-closed', () => {
