@@ -80,6 +80,9 @@ jobs:
           path: dist-combined/
           merge-multiple: true
 
+      - name: 📋 List all artifacts
+        run: ls -la dist-combined/
+
       - name: 📦 Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -87,11 +90,13 @@ jobs:
             dist-combined/*.dmg
             dist-combined/*.zip
             dist-combined/*.exe
+            dist-combined/*.appx
             dist-combined/*.AppImage
             dist-combined/*.deb
           draft: false
           prerelease: false
           fail_on_unmatched_files: false
+          overwrite: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
