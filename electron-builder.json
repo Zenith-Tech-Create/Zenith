@@ -38,8 +38,8 @@
 
   "appx": {
     "publisherDisplayName": "ZenithOS",
-    "displayName": "Zenith",
-    "identityName": "ZenithOS.Zenith",
+    "displayName": "ZenithPersonnelLifeOS",
+    "identityName": "ZenithOS.ZenithPersonnelLifeOS",
     "publisher": "CN=2E19EAE5-432E-47BD-9A4F-4B29D29D67C4",
     "applicationId": "ZenithOS"
   },
