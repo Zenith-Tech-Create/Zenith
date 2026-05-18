@@ -17,9 +17,11 @@
     "target": [
       {
         "target": "nsis",
-        "arch": [
-          "x64"
-        ]
+        "arch": ["x64"]
+      },
+      {
+        "target": "appx",
+        "arch": ["x64"]
       }
     ],
     "icon": "assets/electron.ico",
@@ -32,6 +34,14 @@
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
     "shortcutName": "Zenith"
+  },
+
+  "appx": {
+    "publisherDisplayName": "Zenith OS",
+    "displayName": "Zenith",
+    "identityName": "ZenithOS.Zenith",
+    "publisher": "CN=2E19EAE5-432E-47BD-9A4F-4B29D29D67C4",
+    "applicationId": "ZenithOS"
   },
   "mac": {
     "target": [
