@@ -74,12 +74,14 @@ jobs:
 
       - name: 📦 Build appx (Windows only)
         if: matrix.os == 'windows-latest'
-        run: npm run build:appx
+        run: |
+          Remove-Item Env:WIN_CSC_LINK -ErrorAction SilentlyContinue
+          npm run build:appx
+        shell: powershell
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
-          WIN_CSC_LINK: ""
           ELECTRON_BUILDER_PUBLISH: never
 
       - name: 📋 List dist output (Windows only)
