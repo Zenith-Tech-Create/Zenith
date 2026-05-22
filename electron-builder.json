@@ -24,7 +24,7 @@
         "arch": ["x64"]
       }
     ],
-    "icon": "assets/zenithicon.ico",
+    "icon": "assets/icon.ico",
     "certificateFile": null,
     "certificatePassword": null
   },
