@@ -1,6 +1,6 @@
 {
   "appId": "com.zenith.app",
-  "productName": "Zenith",
+  "productName": "ZenithPersonnelLifeOS",
   "directories": {
     "output": "dist",
     "buildResources": "assets"
@@ -24,7 +24,7 @@
         "arch": ["x64"]
       }
     ],
-    "icon": "assets/electron.ico",
+    "icon": "assets/zenithicon.ico",
     "certificateFile": null,
     "certificatePassword": null
   },
@@ -33,7 +33,7 @@
     "allowToChangeInstallationDirectory": true,
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
-    "shortcutName": "Zenith"
+    "shortcutName": "ZenithOS"
   },
 
   "appx": {
