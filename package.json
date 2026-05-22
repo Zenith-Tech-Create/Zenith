@@ -36,12 +36,12 @@
     "electron-builder": "^24.13.3"
   },
   "build": {
-    "appId": "com.zenithstudio.zenith",
-    "productName": "Zenith",
-    "copyright": "Copyright © 2026 Zenith Studio",
+    "appId": "com.zenithos.zenith",
+    "productName": "ZenithOS",
+    "copyright": "Copyright © 2026 ZenithOS",
     "directories": {
       "output": "dist",
-      "buildResources": "build"
+      "buildResources": "assests"
     },
     "files": [
       "main.js",
