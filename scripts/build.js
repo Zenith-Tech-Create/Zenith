@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 /**
  * Build script for Zenith
  * Creates installers for Windows, macOS, and Linux
@@ -10,7 +9,6 @@
  *   npm run build:mac       (macOS only)
  *   npm run build:linux     (Linux only)
  */
-
 const { build, Platform } = require('electron-builder');
 const path = require('path');
 const fs = require('fs');
@@ -47,28 +45,19 @@ const baseConfig = {
   }
 };
 
-const config = baseConfig;
-
-const targets = {
-  win: ['nsis'],
-  mac: ['dmg', 'zip'],
-  linux: ['AppImage', 'deb']
-};
-
 async function buildApp() {
   try {
     console.log(`🚀 Building Zenith for ${platform === 'all' ? 'all platforms' : platform}...`);
-    
+
     let buildConfig = { ...baseConfig };
-    
+
     if (platform === 'all') {
-      // Build for all platforms
-      buildConfig.win = { target: ['nsis'] };
-      buildConfig.mac = { target: ['dmg', 'zip'] };
+      buildConfig.win   = { target: ['nsis'] };
+      buildConfig.mac   = { target: ['dmg', 'zip'] };
       buildConfig.linux = { target: ['AppImage', 'deb'] };
-  await build({ config: buildConfig });
+      await build({ config: buildConfig, publish: 'never' });
+
     } else if (platform === 'mac') {
-      // Build for macOS only
       buildConfig.mac = {
         target: ['dmg', 'zip'],
         icon: 'assets/electron.icns',
@@ -76,19 +65,32 @@ async function buildApp() {
         hardenedRuntime: true,
         gatekeeperAssess: false
       };
-      await build({ config: buildConfig, targets: Platform.MAC.createTarget() });
+      await build({
+        config: buildConfig,
+        targets: Platform.MAC.createTarget(),
+        publish: 'never'
+      });
+
     } else if (platform === 'win') {
-      // Build for Windows only
       buildConfig.win = {
         target: ['nsis'],
         certificateFile: process.env.WIN_CERT_FILE || null,
         certificatePassword: process.env.WIN_CERT_PASSWORD || null
       };
-      await build({ config: buildConfig, targets: Platform.WINDOWS.createTarget() });
+      await build({
+        config: buildConfig,
+        targets: Platform.WINDOWS.createTarget(),
+        publish: 'never'
+      });
+
     } else if (platform === 'linux') {
-      // Build for Linux only
       buildConfig.linux = { target: ['AppImage', 'deb'] };
-      await build({ config: buildConfig, targets: Platform.LINUX.createTarget() });
+      await build({
+        config: buildConfig,
+        targets: Platform.LINUX.createTarget(),
+        publish: 'never'
+      });
+
     } else {
       console.error(`❌ Unknown platform: ${platform}`);
       console.error('Supported platforms: all, win, mac, linux');
@@ -97,6 +99,7 @@ async function buildApp() {
 
     console.log('✅ Build completed successfully!');
     console.log('📦 Installers are in the dist/ directory');
+
   } catch (error) {
     console.error('❌ Build failed:', error);
     process.exit(1);
