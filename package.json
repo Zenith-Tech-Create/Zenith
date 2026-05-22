@@ -5,16 +5,16 @@
   "main": "main.js",
   "homepage": "./",
   "scripts": {
-  "start": "electron .",
-  "dev": "electron .",
-  "build": "node scripts/build.js all",
-  "build:win": "node scripts/build.js win",
-  "build:mac": "node scripts/build.js mac",
-  "build:linux": "node scripts/build.js linux",
-  "build:appx": "electron-builder --win appx",
-  "pack": "electron-builder --dir",
-  "dist": "electron-builder"
-},
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "node scripts/build.js all",
+    "build:win": "node scripts/build.js win",
+    "build:mac": "node scripts/build.js mac",
+    "build:linux": "node scripts/build.js linux",
+    "build:appx": "electron-builder --win appx",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
   "keywords": [
     "productivity",
     "planner",
@@ -22,7 +22,7 @@
     "life os"
   ],
   "author": {
-    "name": "Zenith Studio",
+    "name": "ZenithOS",
     "email": "Localaiworkstation@gmail.com"
   },
   "license": "ISC",
@@ -36,11 +36,12 @@
     "electron-builder": "^24.13.3"
   },
   "build": {
-    "appId": "com.zenithstudio.zenithOS",
-    "productName": "ZenithPersonnelLifeOS",
+    "appId": "com.zenithstudio.zenith",
+    "productName": "Zenith",
     "copyright": "Copyright © 2026 Zenith Studio",
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build"
     },
     "files": [
       "main.js",
@@ -51,9 +52,9 @@
     ],
     "win": {
       "target": [
-      {
-      "target": "nsis",
-      "arch": ["x64", "ia32"]
+        {
+          "target": "nsis",
+          "arch": ["x64"]
         },
         {
           "target": "appx",
@@ -72,7 +73,7 @@
       "installerHeaderIcon": "assets/zenithicon.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "ZenithOS"
+      "shortcutName": "Zenith"
     },
     "appx": {
       "applicationId": "ZenithOS.Zenith",
