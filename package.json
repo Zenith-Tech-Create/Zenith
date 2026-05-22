@@ -77,7 +77,7 @@
     },
     "appx": {
       "applicationId": "ZenithOS.Zenith",
-      "backgroundColor": "#1D9E75",
+      "backgroundColor": "#000000",
       "displayName": "Zenith Personnel Life OS",
       "identityName": "ZenithOS.ZenithPersonnelLifeOS",
       "publisher": "CN=2E19EAE5-432E-47BD-9A4F-4B29D29D67C4",
