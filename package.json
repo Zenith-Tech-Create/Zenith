@@ -11,7 +11,7 @@
     "build:win": "node scripts/build.js win",
     "build:mac": "node scripts/build.js mac",
     "build:linux": "node scripts/build.js linux",
-    "build:appx": "electron-builder --win appx",
+    "build:appx": "electron-builder --win appx -p never",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
