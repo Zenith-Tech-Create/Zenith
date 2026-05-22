@@ -6,10 +6,10 @@ on:
     tags: ['v*']
   pull_request:
     branches: [main]
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 
 permissions:
-  contents: write  
+  contents: write
 
 jobs:
   build:
@@ -17,22 +17,15 @@ jobs:
     strategy:
       matrix:
         include:
-          # macOS - ARM64 (Apple Silicon)
           - os: macos-latest
             target: mac
             arch: arm64
-            
-          # macOS - x64 (Intel)
           - os: macos-latest
             target: mac
             arch: x64
-            
-          # Windows - x64
           - os: windows-latest
             target: win
             arch: x64
-            
-          # Linux - x64
           - os: ubuntu-latest
             target: linux
             arch: x64
@@ -50,6 +43,22 @@ jobs:
       - name: 📚 Install dependencies
         run: npm install
 
+      - name: 🔍 Verify appx icons (Windows only)
+        if: matrix.os == 'windows-latest'
+        run: |
+          echo "=== build/appx contents ==="
+          dir build\appx
+          echo "=== assets contents ==="
+          dir assets
+        shell: cmd
+
+      - name: 🧹 Clear electron-builder cache (Windows only)
+        if: matrix.os == 'windows-latest'
+        run: |
+          if exist "%LOCALAPPDATA%\electron-builder" rmdir /s /q "%LOCALAPPDATA%\electron-builder"
+          echo "Cache cleared"
+        shell: cmd
+
       - name: 🔑 Inject API key
         run: node scripts/inject-env.js
         env:
@@ -60,6 +69,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: 📦 Build appx (Windows only)
+        if: matrix.os == 'windows-latest'
+        run: npm run build:appx
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+          WIN_CSC_LINK: ""
+
+      - name: 📋 List dist output (Windows only)
+        if: matrix.os == 'windows-latest'
+        run: dir dist
+        shell: cmd
 
       - name: 📤 Upload artifacts
         uses: actions/upload-artifact@v4
@@ -72,7 +96,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
-    
     steps:
       - name: 📥 Download all artifacts
         uses: actions/download-artifact@v4
@@ -99,4 +122,3 @@ jobs:
           overwrite: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
