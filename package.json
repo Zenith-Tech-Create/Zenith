@@ -5,20 +5,26 @@
   "main": "main.js",
   "homepage": "./",
   "scripts": {
-    "start": "electron .",
-    "dev": "electron .",
-    "build": "node scripts/build.js all",
-    "build:win": "node scripts/build.js win",
-    "build:mac": "node scripts/build.js mac",
-    "build:linux": "node scripts/build.js linux",
-    "gen-license": "node scripts/generate-license.js",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder"
-  },
-  "keywords": [],
+  "start": "electron .",
+  "dev": "electron .",
+  "build": "node scripts/build.js all",
+  "build:win": "node scripts/build.js win",
+  "build:mac": "node scripts/build.js mac",
+  "build:linux": "node scripts/build.js linux",
+  "build:appx": "electron-builder --win appx",
+  "gen-license": "node scripts/generate-license.js",
+  "pack": "electron-builder --dir",
+  "dist": "electron-builder"
+},
+  "keywords": [
+    "productivity",
+    "planner",
+    "tracker",
+    "life os"
+  ],
   "author": {
-  "name": "Zenith OS",
-  "email": "Localaiworkstation@email.com"
+    "name": "Zenith Studio",
+    "email": "Localaiworkstation@gmail.com"
   },
   "license": "ISC",
   "dependencies": {
@@ -29,5 +35,65 @@
   "devDependencies": {
     "electron": "27.0.0",
     "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.zenithstudio.zenithOS",
+    "productName": "ZenithPersonnelLifeOS",
+    "copyright": "Copyright © 2026 Zenith Studio",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": [
+      {
+      "target": "nsis",
+      "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "appx",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/zenithicon.ico",
+      "publisherName": "ZenithOS",
+      "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "assets/zenithicon.ico",
+      "uninstallerIcon": "assets/zenithicon.ico",
+      "installerHeaderIcon": "assets/zenithicon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ZenithOS"
+    },
+    "appx": {
+      "applicationId": "ZenithOS.Zenith",
+      "backgroundColor": "#1D9E75",
+      "displayName": "Zenith Personnel Life OS",
+      "identityName": "ZenithOS.ZenithPersonnelLifeOS",
+      "publisher": "CN=2E19EAE5-432E-47BD-9A4F-4B29D29D67C4",
+      "publisherDisplayName": "ZenithOS",
+      "languages": ["en-US"],
+      "showNameOnTiles": true
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/electron.icns",
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/zenith_icon_1024.png",
+      "category": "Office"
+    }
   }
 }
