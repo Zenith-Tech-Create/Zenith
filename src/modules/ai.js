@@ -187,12 +187,12 @@ const AI = (() => {
       'Submitted from Zenith Personnel Life OS v1.2.1'
     )
 
-    try {
-      const { shell } = require('electron')
-      shell.openExternal('mailto:Localaiworkstation@gmail.com?subject=' + subject + '&body=' + body)
-    } catch (e) {
-      // Fallback if electron shell not available
-      window.open('mailto:Localaiworkstation@gmail.com?subject=' + subject + '&body=' + body)
+    // Open email client via preload bridge
+    const mailtoUrl = 'mailto:Localaiworkstation@gmail.com?subject=' + subject + '&body=' + body
+    if (window.zenith && window.zenith.openExternal) {
+      window.zenith.openExternal(mailtoUrl)
+    } else {
+      window.location.href = mailtoUrl
     }
 
     hideReportDialog()

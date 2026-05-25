@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, shell } = require('electron');
 
 // Expose APIs to the renderer process
 contextBridge.exposeInMainWorld('zenith', {
@@ -17,4 +17,7 @@ contextBridge.exposeInMainWorld('zenith', {
 
   // Tasks overdue check
   getOverdueTasks: () => ipcRenderer.invoke('tasks:get-overdue'),
+
+  // Open external links (email client, browser, etc.)
+  openExternal: (url) => shell.openExternal(url),
 });
