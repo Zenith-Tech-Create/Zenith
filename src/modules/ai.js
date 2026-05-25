@@ -119,8 +119,8 @@ const AI = (() => {
       </div>
 
       <!-- Report success toast -->
-      <div id="report-toast" style="display:none;position:fixed;bottom:20px;right:20px;background:#1A1A1A;color:#fff;padding:10px 16px;border-radius:var(--radius);font-size:13px;z-index:1001;">
-        Report submitted. Thank you for your feedback.
+      <div id="report-toast" style="display:none;position:fixed;bottom:20px;right:20px;background:#1A1A1A;color:#fff;padding:10px 16px;border-radius:var(--radius);font-size:13px;z-index:1001;max-width:320px;line-height:1.5;">
+        Report submitted. Your email client will open so you can send the report to our team.
       </div>
     `
   }
@@ -156,6 +156,13 @@ const AI = (() => {
     const reason    = reasonEl ? reasonEl.value : 'Other'
     const details   = detailsEl ? detailsEl.value.trim() : ''
 
+    // Get reported message content if available
+    let messageContent = ''
+    if (currentReportMessageId) {
+      const msgEl = document.getElementById('ai-msg-' + currentReportMessageId)
+      if (msgEl) messageContent = msgEl.textContent.substring(0, 500)
+    }
+
     // Save report locally
     const reports = DB.get('aiReports') || []
     reports.push({
@@ -167,16 +174,35 @@ const AI = (() => {
     })
     await DB.save('aiReports', reports)
 
+    // Open email client with report pre-filled
+    const subject = encodeURIComponent('Zenith AI Content Report')
+    const body = encodeURIComponent(
+      'ZENITH AI CONTENT REPORT\n' +
+      '================================\n\n' +
+      'Reason: ' + reason + '\n\n' +
+      'Additional details: ' + (details || 'None provided') + '\n\n' +
+      (messageContent ? 'Reported message:\n' + messageContent + '\n\n' : '') +
+      'Timestamp: ' + new Date().toISOString() + '\n\n' +
+      '================================\n' +
+      'Submitted from Zenith Personnel Life OS v1.2.1'
+    )
+
+    try {
+      const { shell } = require('electron')
+      shell.openExternal('mailto:Localaiworkstation@gmail.com?subject=' + subject + '&body=' + body)
+    } catch (e) {
+      // Fallback if electron shell not available
+      window.open('mailto:Localaiworkstation@gmail.com?subject=' + subject + '&body=' + body)
+    }
+
     hideReportDialog()
 
     // Show success toast
     const toast = document.getElementById('report-toast')
     if (toast) {
       toast.style.display = 'block'
-      setTimeout(() => { toast.style.display = 'none' }, 3000)
+      setTimeout(() => { toast.style.display = 'none' }, 4000)
     }
-
-    console.log('Content report submitted:', { reason, details })
   }
 
   // ── Key management ────────────────────────────────────────────────
