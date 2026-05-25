@@ -46,7 +46,7 @@ const AI = (() => {
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#854F0B" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
           <span style="font-size:11px;color:#854F0B;">AI can make mistakes. Responses are generated automatically and may be inaccurate.</span>
         </div>
-        <button onclick="AI.showReportDialog(null, 'general')"
+        <button onclick="AI.openReportForm()"
           style="background:none;border:0.5px solid #854F0B;border-radius:var(--radius);padding:3px 10px;font-size:11px;cursor:pointer;color:#854F0B;font-family:var(--font);white-space:nowrap;">
           Report content
         </button>
@@ -332,7 +332,7 @@ Nutrition today: ${totalCals} cal, ${totalProt}g protein`
       aWrap.style.cssText = 'display:flex;flex-direction:column;align-self:flex-start;gap:4px;max-width:90%;'
       aWrap.innerHTML = `
         <div class="msg-ai" id="ai-msg-${msgId}" style="margin:0;">${reply}</div>
-        <button onclick="AI.showReportDialog('${msgId}', 'message')"
+        <button onclick="AI.openReportForm()"
           style="background:none;border:none;cursor:pointer;font-size:10px;color:var(--text-3);
             text-align:left;padding:0 4px;font-family:var(--font);display:flex;align-items:center;gap:3px;">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -357,5 +357,14 @@ Nutrition today: ${totalCals} cal, ${totalProt}g protein`
     if (input) input.focus()
   }
 
-  return { render, showKeyForm, hideKeyForm, saveKey, ask, send, showReportDialog, hideReportDialog, submitReport }
+  function openReportForm() {
+    const reportUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSe9faXISwEADhC3fLdQ0MaSS2TSAsAR4DL8LdevyOVSp8hbxw/viewform?usp=header'
+    if (window.zenith && typeof window.zenith.openExternal === 'function') {
+      window.zenith.openExternal(reportUrl)
+    } else {
+      window.location.href = reportUrl
+    }
+  }
+
+  return { render, showKeyForm, hideKeyForm, saveKey, ask, send, openReportForm, showReportDialog, hideReportDialog, submitReport }
 })()
