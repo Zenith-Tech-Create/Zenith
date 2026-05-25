@@ -9,6 +9,7 @@ const AI = (() => {
     const el     = document.getElementById('section-ai')
     const apiKey = DB.get('apiKey') || ''
 
+    el.style.position = 'relative'
     el.innerHTML = `
       <div style="padding:16px 20px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:10px;">
         <div style="width:32px;height:32px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;">
@@ -79,7 +80,7 @@ const AI = (() => {
       `}
 
       <!-- Report dialog (hidden by default) -->
-      <div id="report-dialog" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+      <div id="report-dialog" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
         <div style="background:var(--bg);border-radius:var(--radius-lg);padding:1.5rem;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.2);">
           <div style="font-size:15px;font-weight:500;margin-bottom:6px;">Report inappropriate content</div>
           <div style="font-size:12px;color:var(--text-2);margin-bottom:1rem;line-height:1.5;">
@@ -131,15 +132,31 @@ const AI = (() => {
   function showReportDialog(messageId, type) {
     currentReportMessageId = messageId
     const dialog = document.getElementById('report-dialog')
-    if (!dialog) return
+    if (!dialog) {
+      console.error('Report dialog not found in DOM')
+      return
+    }
     dialog.style.display = 'flex'
 
+    // Reset form
+    const details = document.getElementById('report-details')
+    if (details) details.value = ''
+    const firstRadio = document.querySelector('input[name="report-reason"]')
+    if (firstRadio) firstRadio.checked = true
+
+    // Show preview of reported message
     const preview = document.getElementById('report-content-preview')
-    if (messageId && preview) {
-      const msgEl = document.getElementById('ai-msg-' + messageId)
-      if (msgEl) {
-        preview.style.display = 'block'
-        preview.textContent = 'Reported message: "' + msgEl.textContent.substring(0, 100) + '..."'
+    if (preview) {
+      if (messageId) {
+        const msgEl = document.getElementById('ai-msg-' + messageId)
+        if (msgEl) {
+          preview.style.display = 'block'
+          preview.textContent = 'Reported message: "' + msgEl.textContent.substring(0, 100) + '..."'
+        } else {
+          preview.style.display = 'none'
+        }
+      } else {
+        preview.style.display = 'none'
       }
     }
   }
@@ -187,13 +204,9 @@ const AI = (() => {
       'Submitted from Zenith Personnel Life OS v1.2.1'
     )
 
-    // Open email client via preload bridge
+    // Open email client directly
     const mailtoUrl = 'mailto:Localaiworkstation@gmail.com?subject=' + subject + '&body=' + body
-    if (window.zenith && window.zenith.openExternal) {
-      window.zenith.openExternal(mailtoUrl)
-    } else {
-      window.location.href = mailtoUrl
-    }
+    window.location.href = mailtoUrl
 
     hideReportDialog()
 
