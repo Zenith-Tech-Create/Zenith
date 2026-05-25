@@ -192,21 +192,17 @@ const AI = (() => {
     await DB.save('aiReports', reports)
 
     // Open email client with report pre-filled
-    const subject = encodeURIComponent('Zenith AI Content Report')
-    const body = encodeURIComponent(
-      'ZENITH AI CONTENT REPORT\n' +
-      '================================\n\n' +
-      'Reason: ' + reason + '\n\n' +
-      'Additional details: ' + (details || 'None provided') + '\n\n' +
-      (messageContent ? 'Reported message:\n' + messageContent + '\n\n' : '') +
-      'Timestamp: ' + new Date().toISOString() + '\n\n' +
-      '================================\n' +
-      'Submitted from Zenith Personnel Life OS v1.2.1'
-    )
-
-    // Open email client directly
-    const mailtoUrl = 'mailto:Localaiworkstation@gmail.com?subject=' + subject + '&body=' + body
-    window.location.href = mailtoUrl
+    // Open Google Form in browser
+    const reportUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSe9faXISwEADhC3fLdQ0MaSS2TSAsAR4DL8LdevyOVSp8hbxw/viewform?usp=header'
+    try {
+      if (window.zenith && typeof window.zenith.openExternal === 'function') {
+        await window.zenith.openExternal(reportUrl)
+      } else {
+        window.location.href = reportUrl
+      }
+    } catch (e) {
+      window.location.href = reportUrl
+    }
 
     hideReportDialog()
 
