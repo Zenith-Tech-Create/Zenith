@@ -11,7 +11,7 @@ let mainWindow = null;
 
 // Seed default data on first launch
 async function seedDefaultData() {
-  if (store.get('initialized')) return; // Already initialized
+  if (store.get('initialized')) return;
 
   store.set('tasks', [
     { id: 1, text: 'Review project proposal', done: false, cat: 'Work', date: 'Today' },
@@ -44,19 +44,19 @@ async function seedDefaultData() {
     { id: 2, type: 'Weight Training', dur: 50, cal: 420, date: 'Yesterday' },
     { id: 3, type: 'Cycling', dur: 45, cal: 510, date: '3 days ago' },
   ]);
-  store.set('journal', [])
+  store.set('journal', []);
   store.set('notes', [
-    { id: 1, title: 'Welcome to Notes', content: 'This is your notes app. Write anything here — ideas, plans, reminders.\\n\\nNotes auto-save as you type.', folder: 'Personal', created: new Date().toISOString(), updated: new Date().toISOString(), pinned: true },
+    { id: 1, title: 'Welcome to Notes', content: 'This is your notes app. Write anything here — ideas, plans, reminders.\n\nNotes auto-save as you type.', folder: 'Personal', created: new Date().toISOString(), updated: new Date().toISOString(), pinned: true },
     { id: 2, title: 'Work ideas', content: 'Things to explore this week:', folder: 'Work', created: new Date().toISOString(), updated: new Date().toISOString(), pinned: false },
-    { id: 3, title: 'Shopping list', content: 'Milk\\nEggs\\nBread\\nCoffee', folder: 'Personal', created: new Date().toISOString(), updated: new Date().toISOString(), pinned: false },
-  ])
-  store.set('noteFolders', ['Personal', 'Work', 'Ideas'])
-  store.set('events', [])
+    { id: 3, title: 'Shopping list', content: 'Milk\nEggs\nBread\nCoffee', folder: 'Personal', created: new Date().toISOString(), updated: new Date().toISOString(), pinned: false },
+  ]);
+  store.set('noteFolders', ['Personal', 'Work', 'Ideas']);
+  store.set('events', []);
   store.set('nutrition', {
     goals: { calories: 2000, protein: 150, carbs: 250, fat: 65 },
     log: []
-  })
-  store.set('initialized', true)
+  });
+  store.set('initialized', true);
 }
 
 // ── Main Application Window ──────────────────────────────────────────────────────
@@ -75,85 +75,87 @@ function createWindow() {
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
     backgroundColor: '#ffffff',
     show: false,
-  })
+  });
 
-  win.loadFile(path.join(__dirname, 'src', 'index.html'))
+  win.loadFile(path.join(__dirname, 'src', 'index.html'));
 
   win.once('ready-to-show', () => {
-    win.show()
-  })
+    win.show();
+  });
 
   // Open external links in default browser
   win.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url)
-    return { action: 'deny' }
-  })
+    shell.openExternal(url);
+    return { action: 'deny' };
+  });
 
-  return win
+  return win;
 }
 
-// ── IPC handlers — renderer talks to main via these ──────────────────────────
+// ── IPC handlers ──────────────────────────────────────────────────────────────
 
 ipcMain.handle('store:get', (_event, key) => {
-  return store.get(key)
-})
+  return store.get(key);
+});
 
 ipcMain.handle('store:set', (_event, key, value) => {
-  store.set(key, value)
-  return true
-})
+  store.set(key, value);
+  return true;
+});
 
 ipcMain.handle('store:get-all', () => {
   return {
-    tasks:        store.get('tasks', []),
-    habits:       store.get('habits', []),
-    goals:        store.get('goals', []),
-    transactions: store.get('transactions', []),
-    workouts:     store.get('workouts', []),
-    journal:      store.get('journal', []),
-    events:       store.get('events', []),
-    nutrition:    store.get('nutrition', { goals: { calories: 2000, protein: 150, carbs: 250, fat: 65 }, log: [] }),
+    tasks:          store.get('tasks', []),
+    habits:         store.get('habits', []),
+    goals:          store.get('goals', []),
+    transactions:   store.get('transactions', []),
+    workouts:       store.get('workouts', []),
+    journal:        store.get('journal', []),
+    notes:          store.get('notes', []),
+    noteFolders:    store.get('noteFolders', ['Personal', 'Work', 'Ideas']),
+    events:         store.get('events', []),
+    nutrition:      store.get('nutrition', { goals: { calories: 2000, protein: 150, carbs: 250, fat: 65 }, log: [] }),
     calConnections: store.get('calConnections', {}),
-    apiKey:       store.get('apiKey', ''),
-    events:       store.get('events', []),
-    nutrition:    store.get('nutrition', { goals: { calories: 2000, protein: 150, carbs: 250, fat: 65 }, log: [] }),
-  }
-})
-
-ipcMain.handle('tasks:get-overdue', () => {
-    console.log('--- Overdue Task Check (renderer-initiated) ---');
-    try {
-        const now   = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const tasks = store.get('tasks', []);
-        const due   = tasks.filter(task => {
-            if (task.done) return false;
-            const d = task.date;
-            if (!d || d === 'Tomorrow' || d === 'This week') return false;
-            if (d === 'Today') return true;
-            const parsed  = new Date(d);
-            if (isNaN(parsed.getTime())) return false;
-            const taskDay = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
-            return taskDay <= today;
-        });
-        console.log(`✅ Found ${due.length} due/overdue tasks.`);
-        return due;
-    } catch (error) {
-        console.error('🚨 ERROR during overdue task check:', error);
-        return [];
-    }
+    apiKey:         store.get('apiKey', ''),
+  };
 });
 
-// ── App lifecycle ───────────────────────────────────────────────────────
+// Open external URLs (email client, browser links)
+ipcMain.handle('open:external', (_event, url) => {
+  shell.openExternal(url);
+  return true;
+});
+
+ipcMain.handle('tasks:get-overdue', () => {
+  console.log('--- Overdue Task Check ---');
+  try {
+    const now   = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const tasks = store.get('tasks', []);
+    const due   = tasks.filter(task => {
+      if (task.done) return false;
+      const d = task.date;
+      if (!d || d === 'Tomorrow' || d === 'This week') return false;
+      if (d === 'Today') return true;
+      const parsed  = new Date(d);
+      if (isNaN(parsed.getTime())) return false;
+      const taskDay = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+      return taskDay <= today;
+    });
+    console.log(`Found ${due.length} due/overdue tasks.`);
+    return due;
+  } catch (error) {
+    console.error('ERROR during overdue task check:', error);
+    return [];
+  }
+});
+
+// ── App lifecycle ─────────────────────────────────────────────────────────────
 
 async function main() {
-  // 1. Seed Data
   await seedDefaultData();
-
-  // 2. Create the main window
   mainWindow = createWindow();
 
-  // 3. Handle application closure/activation
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       mainWindow = createWindow();
@@ -161,40 +163,38 @@ async function main() {
   });
 }
 
-// Start the entire application sequence asynchronously
 app.whenReady().then(async () => {
-    await main();
+  await main();
 
-    // Auto-updater
-    autoUpdater.checkForUpdatesAndNotify();
+  autoUpdater.checkForUpdatesAndNotify();
 
-    autoUpdater.on('update-available', () => {
-        const { dialog } = require('electron');
-        dialog.showMessageBox({
-            type: 'info',
-            title: 'Update Available',
-            message: 'A new version of Zenith is available. It will be downloaded in the background.',
-            buttons: ['OK']
-        });
+  autoUpdater.on('update-available', () => {
+    const { dialog } = require('electron');
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Update Available',
+      message: 'A new version of Zenith is available. It will be downloaded in the background.',
+      buttons: ['OK']
     });
+  });
 
-    autoUpdater.on('update-downloaded', () => {
-        const { dialog } = require('electron');
-        dialog.showMessageBox({
-            type: 'info',
-            title: 'Update Ready',
-            message: 'Update downloaded. Zenith will restart to apply the update.',
-            buttons: ['Restart Now']
-        }).then(() => {
-            autoUpdater.quitAndInstall();
-        });
+  autoUpdater.on('update-downloaded', () => {
+    const { dialog } = require('electron');
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Update Ready',
+      message: 'Update downloaded. Zenith will restart to apply the update.',
+      buttons: ['Restart Now']
+    }).then(() => {
+      autoUpdater.quitAndInstall();
     });
+  });
 
-    autoUpdater.on('error', (err) => {
-        console.error('Auto-updater error:', err);
-    });
+  autoUpdater.on('error', (err) => {
+    console.error('Auto-updater error:', err);
+  });
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit()
-})
+  if (process.platform !== 'darwin') app.quit();
+});
