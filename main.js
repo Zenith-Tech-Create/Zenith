@@ -12,7 +12,6 @@ let mainWindow = null;
 // Seed default data on first launch
 async function seedDefaultData() {
   if (store.get('initialized')) return;
-
   store.set('tasks', [
     { id: 1, text: 'Review project proposal', done: false, cat: 'Work', date: 'Today' },
     { id: 2, text: 'Buy groceries', done: false, cat: 'Personal', date: 'Today' },

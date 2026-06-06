@@ -73,7 +73,7 @@
       "installerHeaderIcon": "assets/zenithicon.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Zenith"
+      "shortcutName": "ZenithOS"
     },
     "appx": {
       "applicationId": "ZenithOS.Zenith",
